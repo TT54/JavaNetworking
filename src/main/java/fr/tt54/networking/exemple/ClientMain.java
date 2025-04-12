@@ -14,6 +14,7 @@ public class ClientMain {
 
     public static void main(String[] args) {
         PacketManager.registerPacket("test_packet", TestPacket.class, TestPacket.TestPacketHandler.class);
+        PacketManager.registerPacket("ping_packet", PingPacket.class, PingPacket.PingPacketHandler.class);
 
         ClientConnection clientSide = new ClientConnection(HOST, PORT);
         while (!clientSide.connect()){
@@ -23,6 +24,10 @@ public class ClientMain {
                 e.printStackTrace();
             }
         }
+
+
+        clientSide.getPacketManager().sendPacketToServer(new PingPacket(0, System.currentTimeMillis()));
+
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String line;

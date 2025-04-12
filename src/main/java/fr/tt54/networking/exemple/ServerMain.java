@@ -10,6 +10,7 @@ public class ServerMain {
 
     public static void main(String[] args) {
         PacketManager.registerPacket("test_packet", TestPacket.class, TestPacket.TestPacketHandler.class);
+        PacketManager.registerPacket("ping_packet", PingPacket.class, PingPacket.PingPacketHandler.class);
 
         connection = new MultiClientServerConnection(PORT);
         connection.enable();

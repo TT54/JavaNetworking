@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,14 +66,18 @@ public class ServerConnection extends NetworkConnection<ServerListener> {
         if(out != null && in != null){
             try {
                 String input;
-                while ((input = in.readLine()) != null){
+                while (this.clientSocket.isConnected() && !this.clientSocket.isClosed() && (input = in.readLine()) != null){
                     final String message = input;
                     this.actionListeners(listener -> listener.onMessageReceived(
                             new NetworkMessageEvent(this, message)
                     ));
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                if(e instanceof SocketException){
+                    System.out.println("Connection lost with " + this.clientSocket.getInetAddress().toString() + ":" + this.clientSocket.getPort());
+                } else {
+                    e.printStackTrace();
+                }
             }
 
             this.actionListeners(listener -> listener.onDisconnection(
